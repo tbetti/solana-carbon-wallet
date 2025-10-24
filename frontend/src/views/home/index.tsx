@@ -1,6 +1,7 @@
 // Next, React
 import { FC, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { TripForm } from './TripForm';
 
 // Wallet
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
@@ -43,10 +44,9 @@ export const HomeView: FC = ({ }) => {
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-indigo-500 rounded-lg blur opacity-40 animate-tilt"></div>
           <div className="max-w-md mx-auto mockup-code bg-primary border-2 border-[#5252529f] p-6 px-10 my-2">
-            <pre data-prefix=">">
-              {/* add the log parts here */}
-              <code className="truncate">{`npx create-solana-dapp <dapp-name>`} </code>
-            </pre>
+            {/* add the log parts here */}
+            {/* <TripForm walletAddress={''} isConnected={false} isSubmitting={false} onSubmit={{}} /> */}
+            <TripForm />
           </div>
         </div>
         <div className="flex flex-col mt-2">
