@@ -1,6 +1,6 @@
-import { Router } from 'express';
-const router = Router();
-import { calculateEmissions, calculateBatchEmissions, getSupportedGPUs } from '../carbon-calculation-engine';
+const express = require('express');
+const router = express.Router();
+const CarbonEngine = require('../src/services/carbonCalculator')
 // ============================================================================
 // CARBON CALCULATION ENDPOINTS
 // ============================================================================
@@ -48,7 +48,7 @@ router.post('/calculate', async (req, res) => {
     }
 
     // Calculate emissions
-    const result = await calculateEmissions(
+    const result = await CarbonEngine.calculateEmissions(
       gpuType,
       hours,
       region
@@ -101,7 +101,7 @@ router.post('/calculate/batch', async (req, res) => {
       });
     }
 
-    const result = await calculateBatchEmissions(
+    const result = await CarbonEngine.calculateBatchEmissions(
       sessions,
       region
     );
@@ -138,7 +138,7 @@ router.post('/calculate/batch', async (req, res) => {
  */
 router.get('/gpu-types', async (req, res) => {
   try {
-    const gpuTypes = await getSupportedGPUs();
+    const gpuTypes = await CarbonEnginegetSupportedGPUs();
 
     res.json({
       success: true,
@@ -154,4 +154,4 @@ router.get('/gpu-types', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

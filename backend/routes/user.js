@@ -1,6 +1,6 @@
-import { Router } from 'express';
-const router = Router();
-import { getTransactionHistory, getUserStats, getSellerListings } from '../trading-engine';
+const express = require('express');
+const router = express.Router();
+const TradingEngine = require('../src/services/tradingEngine')
 // ============================================================================
 // USER/WALLET ENDPOINTS
 // ============================================================================
@@ -34,7 +34,7 @@ router.get('/:walletAddress/transactions', async (req, res) => {
   try {
     const { walletAddress } = req.params;
 
-    const history = await getTransactionHistory(walletAddress);
+    const history = await TradingEngine.getTransactionHistory(walletAddress);
 
     res.json({
       success: true,
@@ -67,7 +67,7 @@ router.get('/:walletAddress/stats', async (req, res) => {
   try {
     const { walletAddress } = req.params;
 
-    const stats = await getUserStats(walletAddress);
+    const stats = await TradingEngine.getUserStats(walletAddress);
 
     res.json({
       success: true,
@@ -98,7 +98,7 @@ router.get('/:walletAddress/listings', async (req, res) => {
   try {
     const { walletAddress } = req.params;
 
-    const listings = await getSellerListings(walletAddress);
+    const listings = await TradingEngine.getSellerListings(walletAddress);
 
     res.json({
       success: true,
@@ -114,4 +114,4 @@ router.get('/:walletAddress/listings', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;;

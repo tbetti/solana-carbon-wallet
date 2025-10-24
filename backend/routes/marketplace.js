@@ -1,7 +1,7 @@
 // routes/marketplace.js
-import { Router } from 'express';
-const router = Router();
-import { getMarketplaceListings, getListingById, createListing, purchaseCredits, cancelListing } from '../trading-engine'; // Note the ../ path
+const express = require('express');
+const router = express.Router();
+const TradingEngine = require('../src/services/tradingEngine');
 
 // ============================================================================
 // MARKETPLACE ENDPOINTS
@@ -47,7 +47,7 @@ router.get('/listings', async (req, res) => {
       sortBy: req.query.sortBy || 'price_asc',
       limit: parseInt(req.query.limit) || 50
     };
-    const listings = await getMarketplaceListings(filters);
+    const listings = await TradingEngine.getMarketplaceListings(filters);
     res.json({ success: true, data: listings });
   } catch (error) {
     console.error('Get listings error:', error);
@@ -72,7 +72,7 @@ router.get('/listings', async (req, res) => {
 router.get('/listing/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const listing = await getListingById(id);
+    const listing = await TradingEngine.getListingById(id);
     if (!listing) {
       return res.status(404).json({ error: 'Listing not found' });
     }
@@ -111,7 +111,7 @@ router.post('/list', async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const listing = await createListing(
+    const listing = await TradingEngine.createListing(
       sellerWallet, creditId, quantity, pricePerCredit
     );
     res.status(201).json({ success: true, data: listing, message: 'Listing created successfully' });
@@ -150,7 +150,7 @@ router.post('/buy', async (req, res) => {
          return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const transaction = await purchaseCredits(
+    const transaction = await TradingEngine.purchaseCredits(
       buyerWallet, listingId, quantity
     );
     res.status(201).json({ success: true, data: transaction, message: 'Purchase successful' });
@@ -186,7 +186,7 @@ router.delete('/listing/:id', async (req, res) => {
          return res.status(400).json({ error: 'sellerWallet is required' });
     }
 
-    await cancelListing(id, sellerWallet);
+    await TradingEngine.cancelListing(id, sellerWallet);
     res.json({ success: true, message: 'Listing cancelled successfully' });
   } catch (error) {
     console.error('Cancel listing error:', error);
@@ -194,4 +194,4 @@ router.delete('/listing/:id', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;;

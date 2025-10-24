@@ -1,6 +1,6 @@
-import { Router } from 'express';
-const router = Router();
-import { recommendPurchase } from '../recommend-engine';
+const express = require('express');
+const router = express.Router();
+const RecommendEngine = require('../src/services/tradingEngine')
 // ============================================================================
 // RECOMMENDATION ENDPOINTS
 // ============================================================================
@@ -44,7 +44,7 @@ router.post('/recommend/purchase', async (req, res) => {
       });
     }
 
-    const recommendations = await recommendPurchase(
+    const recommendations = await RecommendEngine.recommendPurchase(
       creditsNeeded,
       preferredTypes,
       maxPricePerCredit
@@ -64,4 +64,4 @@ router.post('/recommend/purchase', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;;

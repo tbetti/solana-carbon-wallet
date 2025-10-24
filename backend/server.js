@@ -1,9 +1,6 @@
-import express, { json } from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { Connection, PublicKey} from "@solana/web3.js";
-import nacl from 'tweetnacl';
-import bs58 from 'bs58';
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
 
 dotenv.config();
 const app = express();
@@ -12,19 +9,19 @@ const app = express();
 // MIDDLEWARE
 // ============================================================================
 app.use(cors());
-app.use(json());
+app.use(express.json());
 
 // ============================================================================
 // IMPORT & MOUNT ROUTES
 // ============================================================================
 
 // Import your new router files
-import carbonRoutes from './routes/carbon';
-import marketplaceRoutes from './routes/marketplace';
-import userRoutes from './routes/user';
-import recommendRoutes from './routes/recommend';
-import infoRoutes from './routes/info';
-import walletRoutes from './routes/wallet';
+const carbonRoutes = require('./routes/carbon');
+const marketplaceRoutes = require('./routes/marketplace');
+const userRoutes = require('./routes/user');
+const recommendRoutes = require('./routes/recommend');
+const infoRoutes = require('./routes/info');
+const walletRoutes =require('./routes/wallet');
 
 // Mount them to their base paths
 app.use('/api/carbon', carbonRoutes);
@@ -41,6 +38,8 @@ app.use('/api/recommend', recommendRoutes);
 // This line means: "Use infoRoutes for any request starting with /api"
 // (This will catch /api/health and /api/info)
 app.use('/api', infoRoutes);
+
+app.use('/api/wallet', walletRoutes);
 
 
 // ============================================================================
@@ -68,7 +67,6 @@ app.use((err, req, res, next) => {
 // START SERVER
 // ============================================================================
 
-const connection = new Connection(process.env.SOLANA_RPC_URL || "confirmed");
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`🚀 Carbon Wallet API running on port ${PORT}`);
@@ -76,4 +74,4 @@ app.listen(PORT, () => {
   console.log(`📖 API info: http://localhost:${PORT}/api/info`);
 });
 
-export default app;
+module.exports = app;

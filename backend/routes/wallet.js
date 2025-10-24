@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import { Connection, PublicKey} from "@solana/web3.js";
-import nacl from 'tweetnacl';
-import bs58 from 'bs58';
+const { Router } = require('express');
+const { Connection, PublicKey } = require('@solana/web3.js');
+const nacl = require('tweetnacl');
+const bs58 = require('bs58');
 
 const router = Router();
 const connection = new Connection(process.env.SOLANA_RPC_URL || "confirmed");
@@ -36,3 +36,5 @@ router.post ("/verify-signature", async(req, res) => {
         res.status(400).json({error: "Error verifying signature"});
     }
 })
+
+module.exports = router;
