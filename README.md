@@ -20,7 +20,7 @@ npm install
 # or
 yarn install
 ```
-tiana
+
 ## Build and Run
 
 Next, run the development server:
