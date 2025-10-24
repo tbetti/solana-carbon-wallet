@@ -1,6 +1,6 @@
-const express = require('express')
-const router = express.Router();
-const healthInfoEngine = require('../health-info-engine')
+import { Router } from 'express';
+const router = Router();
+import healthInfoEngine from '../health-info-engine';
 // ============================================================================
 // HEALTH CHECK & INFO ENDPOINTS
 // ============================================================================
@@ -51,4 +51,4 @@ router.get('/info', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

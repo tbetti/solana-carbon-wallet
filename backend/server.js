@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { Connection, PublicKey} from "@solana/web3.js";
@@ -7,48 +7,73 @@ import bs58 from 'bs58';
 
 dotenv.config();
 const app = express();
+
+// ============================================================================
+// MIDDLEWARE
+// ============================================================================
 app.use(cors());
-app.use(express.json());
+app.use(json());
+
+// ============================================================================
+// IMPORT & MOUNT ROUTES
+// ============================================================================
+
+// Import your new router files
+import carbonRoutes from './routes/carbon';
+import marketplaceRoutes from './routes/marketplace';
+import userRoutes from './routes/user';
+import recommendRoutes from './routes/recommend';
+import infoRoutes from './routes/info';
+import walletRoutes from './routes/wallet';
+
+// Mount them to their base paths
+app.use('/api/carbon', carbonRoutes);
+
+// This line means: "Use marketplaceRoutes for any request starting with /api/marketplace"
+app.use('/api/marketplace', marketplaceRoutes);
+
+// This line means: "Use userRoutes for any request starting with /api/user"
+app.use('/api/user', userRoutes);
+
+// This line means: "Use recommendRoutes for any request starting with /api/recommend"
+app.use('/api/recommend', recommendRoutes);
+
+// This line means: "Use infoRoutes for any request starting with /api"
+// (This will catch /api/health and /api/info)
+app.use('/api', infoRoutes);
+
+
+// ============================================================================
+// ERROR HANDLING (Keep this at the bottom)
+// ============================================================================
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Endpoint not found',
+    message: `${req.method} ${req.path} does not exist`
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({
+    error: 'Internal server error',
+    message: err.message
+  });
+});
+
+// ============================================================================
+// START SERVER
+// ============================================================================
 
 const connection = new Connection(process.env.SOLANA_RPC_URL || "confirmed");
-
-app.get("/", (req,res) => {
-    res.send("Solana Backend is running");
-});
-
-// Get SOL balance for a wallet
-
-app.get("/balance/:address", async(req, res) => {
-    try{
-        const pubkey = new PublicKey(req.params.address);
-        const balance = await connection.getBalance(pubkey);
-        res.json({balance: balance / 1e9});
-    } catch (error) {
-        res.status(400).json({error: "Invalid address"});
-    }
-})
-
-// Verify wallet signature (basic auth check)
-app.post ("/verify-signature", async(req, res) => {
-    try {
-        const {publicKey, signature, message} = req.body;
-
-        const isValid = nacl.sign.detached.verify(
-            new TextEncoder().encode(message),
-            bs58.decode(signature),
-            bs58.decode(publicKey)
-        )
-        if(isValid){
-            res.json({successs: true, message: "Signature is valid"});
-        } else {
-            res.status(401).json({ success: false, message: "Invalid signature" });
-        }
-    } catch (error) {
-        res.status(400).json({error: "Error verifying signature"});
-    }
-})
-
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Carbon Wallet API running on port ${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`📖 API info: http://localhost:${PORT}/api/info`);
 });
+
+export default app;

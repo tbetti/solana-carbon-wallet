@@ -1,6 +1,6 @@
-const express = require('express')
-const router = express.Router();
-const RecomendEngine = require('../recommend-engine')
+import { Router } from 'express';
+const router = Router();
+import { recommendPurchase } from '../recommend-engine';
 // ============================================================================
 // RECOMMENDATION ENDPOINTS
 // ============================================================================
@@ -44,7 +44,7 @@ router.post('/recommend/purchase', async (req, res) => {
       });
     }
 
-    const recommendations = await RecomendEngine.recommendPurchase(
+    const recommendations = await recommendPurchase(
       creditsNeeded,
       preferredTypes,
       maxPricePerCredit
@@ -64,4 +64,4 @@ router.post('/recommend/purchase', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
