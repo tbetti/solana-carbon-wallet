@@ -32,7 +32,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Server
-PORT=3000
+PORT=8000
 
 # Database
 DATABASE_URL=postgresql://username:password@localhost:5432/carbon_wallet
