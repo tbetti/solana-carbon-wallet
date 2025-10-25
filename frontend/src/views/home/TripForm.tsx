@@ -1,7 +1,5 @@
 import { Zap, Check, Loader2, Earth, Hourglass } from 'lucide-react'
-import { useEffect, useState } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
-// import { setActualMode, sethoursKm, setManualWalletAddress, setVehicleModelId, setSubmitted } from '../slices/tripSlice'
+import { useState } from 'react'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Input } from '../../components/ui/input'
