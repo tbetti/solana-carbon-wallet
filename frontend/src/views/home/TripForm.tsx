@@ -6,10 +6,8 @@ import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
 import { Separator } from '../../components/ui/separator'
-import { fetchGpuCost } from 'pages/api/apiClient'
 
-export function TripForm() {
-  const [submitted, setSubmitted] = useState(false)
+export function TripForm({ onCalculate, loading, submitted, setSubmitted, error, setError }) {
   const [isConnected, setIsConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -20,10 +18,6 @@ export function TripForm() {
   const [region, setRegion] = useState('US-CA');
 
   // State for the API response
-  const [data, setData] = useState(null); // This will hold the response JSON
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
   const validate = () => {
     const newErrors: Record<string, string> = {}
 
@@ -49,42 +43,34 @@ export function TripForm() {
   }
 
   const handleGpuType = (value: string) => {
+    setSubmitted(false)
     setGpuType(value)
   }
   
   const handleRegion = (value: string) => {
+    setSubmitted(false)
     setRegion(value)
+  }
+
+  const handleHours = (value: string) => {
+    setSubmitted(false)
+    setHours(value)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true);
-    setError(null);
-    setData(null); // Clear previous results
 
     if (!validate()) {
-      setLoading(false);
       return
     }
 
-    try {
-      // Create the data object to send
-      const calculationData = {
-        gpuType,
-        hours: parseInt(hours, 10),
-        region,
-      };
-
-      // Call the externalized API function
-      const result = await fetchGpuCost(calculationData);
-      setSubmitted(true)
-      setData(result.data); // Store the successful response
-      setTimeout(() => setSubmitted(false), 2000)
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    // Create the data object to send
+    const calculationData = {
+      gpuType,
+      hours: parseInt(hours, 10),
+      region,
+    };
+    onCalculate(calculationData)
   }
 
   const isFormValid =
@@ -95,7 +81,7 @@ export function TripForm() {
     // isConnected && walletAddress
 
   return (
-    <Card className="shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl border-[#E0E0E0]">
+    <Card style={{marginBottom: '20px'}} className="shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl border-[#E0E0E0]">
       <CardHeader className="px-10 pt-10 pb-4">
         <CardTitle className="text-[1.25rem] text-[#fdfdfd]">Log your trip</CardTitle>
         <CardDescription className="text-[#667085] text-sm pt-1">
@@ -139,7 +125,7 @@ export function TripForm() {
               step="0.1"
               placeholder="e.g., 12.5"
               value={hours}
-              onChange={(e) => setHours(e.target.value)}
+              onChange={(e) => handleHours(e.target.value)}
               className={`rounded-2xl border-[#E0E0E0] text-gray-900 ${error && error.hours? 'border-[#E5484D]' : ''}`}
             />
             {error && error.hours && <p className="text-sm text-[#E5484D]">{error.hours}</p>}
