@@ -1,7 +1,7 @@
-import { Car, Check, Loader2, Ruler, Train, Wallet } from 'lucide-react'
+import { Zap, Check, Loader2, Earth, Wallet, Hourglass } from 'lucide-react'
 import { useEffect, useState } from 'react'
 // import { useDispatch, useSelector } from 'react-redux'
-// import { setActualMode, setDistanceKm, setManualWalletAddress, setVehicleModelId, setSubmitted } from '../slices/tripSlice'
+// import { setActualMode, sethoursKm, setManualWalletAddress, setVehicleModelId, setSubmitted } from '../slices/tripSlice'
 import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Input } from '../../components/ui/input'
@@ -13,22 +13,26 @@ interface TripFormProps {
   walletAddress: string
   isConnected: boolean
   isSubmitting: boolean
-  onSubmit: (data: { vehicle_model_id: string; distance_km: number; actual_mode: string; wallet_address: string }) => void
+  onSubmit: (data: { vehicle_model_id: string; hours_km: number; actual_mode: string; wallet_address: string }) => void
 }
 
 // export function TripForm({ walletAddress, isConnected, isSubmitting, onSubmit }: TripFormProps) {
 export function TripForm() {
-  // const dispatch = useDispatch<AppDispatch>()
-  // const { vehicleModelId, distanceKm, actualMode, manualWalletAddress, submitted } = useSelector((s: RootState) => s.trip)
-  const [vehicleModelId, setVehicleModelId] = useState('')
-  const [distanceKm, setDistanceKm] = useState('0')
-  const [actualMode, setActualMode] = useState('bike')
-  const [manualWalletAddress, setManualWalletAddress] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+    // State for the form inputs, pre-filled with your example
+  const [gpuType, setGpuType] = useState('A100');
+  const [hours, setHours] = useState('100');
+  const [region, setRegion] = useState('US-West');
+
+  // State for the API response
+  const [data, setData] = useState(null); // This will hold the response JSON
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (isConnected) {
@@ -39,37 +43,33 @@ export function TripForm() {
   const validate = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!vehicleModelId.trim()) {
-      newErrors.vehicleModelId = 'Please enter a valid model ID.'
-    } else if (vehicleModelId.length < 10 || vehicleModelId.length > 64) {
-      newErrors.vehicleModelId = 'Please enter a valid model ID.'
+    if (!gpuType) {
+      newErrors.actualMode = 'Please select a GPU Type.'
     }
 
-    const distance = parseFloat(distanceKm)
-    if (!distanceKm) {
-      newErrors.distanceKm = 'Distance must be greater than zero.'
-    } else if (isNaN(distance) || distance <= 0) {
-      newErrors.distanceKm = 'Distance must be greater than zero.'
-    } else if (distance > 2000) {
-      newErrors.distanceKm = 'Invalid distance.'
+    const hoursNum = parseFloat(hours)
+    if (!hours) {
+      newErrors.hours = 'Hours must be greater than zero.'
+    } else if (isNaN(hoursNum) || hoursNum <= 0) {
+      newErrors.hours = 'Hours must be greater than zero.'
+    } else if (hoursNum > 2000) {
+      newErrors.hours = 'Invalid hours.'
     }
 
-    if (!actualMode) {
-      newErrors.actualMode = 'Please select a transport mode.'
-    }
-
-    const addressToUse = isConnected ? walletAddress : manualWalletAddress
-    if (!addressToUse.trim()) {
-      newErrors.walletAddress = 'Please connect or enter a valid wallet address.'
+    if (!region) {
+      newErrors.actualMode = 'Please select a region.'
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleActualMode = (value: string) => {
-    // dispatch(setActualMode(value))
-    setActualMode(value)
+  const handleGpuType = (value: string) => {
+    setGpuType(value)
+  }
+  
+  const handleRegion = (value: string) => {
+    setRegion(value)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,16 +79,13 @@ export function TripForm() {
       return
     }
 
-    const addressToUse = isConnected ? walletAddress : manualWalletAddress
-
     // await onSubmit({
     //   vehicle_model_id: vehicleModelId,
-    //   distance_km: parseFloat(distanceKm),
+    //   hours_km: parseFloat(hoursKm),
     //   actual_mode: actualMode,
-    //   wallet_address: addressToUse,
+    //   wallet_address: walletAddress,
     // })
 
-    // dispatch(setSubmitted(true))
     setSubmitted(true)
     // setTimeout(() => dispatch(setSubmitted(false)), 2000)
     setTimeout(() => setSubmitted(false), 2000)
@@ -96,96 +93,91 @@ export function TripForm() {
   }
 
   const isFormValid =
-    vehicleModelId.trim().length >= 10 &&
-    vehicleModelId.trim().length <= 64 &&
-    parseFloat(distanceKm) > 0 &&
-    parseFloat(distanceKm) <= 2000 &&
-    actualMode &&
-    (isConnected ? walletAddress : manualWalletAddress).trim()
+    gpuType &&
+    parseFloat(hours) > 0 &&
+    parseFloat(hours) <= 2000 &&
+    region &&
+    isConnected && walletAddress
 
   return (
     <Card className="shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl border-[#E0E0E0]">
       <CardHeader className="px-10 pt-10 pb-4">
-        <CardTitle className="text-[1.25rem] text-[#1A1F2C]">Log your trip</CardTitle>
+        <CardTitle className="text-[1.25rem] text-[#fdfdfd]">Log your trip</CardTitle>
         <CardDescription className="text-[#667085] text-sm pt-1">
-          We'll calculate CO₂ saved vs. driving and send CarbonPoints to your wallet.
+          We'll calculate the CarbonPoints to send to your wallet.
         </CardDescription>
       </CardHeader>
       <Separator className="bg-[#E0E0E0]" />
       <CardContent className="px-10 py-8">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="vehicleModelId" className="flex items-center gap-2 text-[#1A1F2C]">
-              <Car className="w-4 h-4 text-[#667085]" />
-              Vehicle model ID
+            <Label htmlFor="gpuType" className="flex items-center gap-2 text-[#f8f8f8]">
+              <Zap className="w-4 h-4 text-[#667085]" />
+              GPU Type
             </Label>
-            <Input
-              id="vehicleModelId"
-              placeholder="e.g., d5f5b9f8-3e3c-4b5d-bc64"
-              value={vehicleModelId}
-              onChange={(e) => setVehicleModelId(e.target.value)}
-              // onChange={(e) => dispatch(setVehicleModelId(e.target.value))}
-              className={`rounded-2xl border-[#E0E0E0] ${errors.vehicleModelId ? 'border-[#E5484D]' : ''}`}
-            />
-            <p className="text-sm text-[#667085]">From Carbon Interface vehicles API.</p>
-            {errors.vehicleModelId && <p className="text-sm text-[#E5484D]">{errors.vehicleModelId}</p>}
+            <Select value={gpuType} onValueChange={handleGpuType}>
+            <SelectTrigger
+              className={`rounded-2xl border-[#E0E0E0] text-gray-900 bg-white ${errors.actualMode ? 'border-[#E5484D]' : ''}`}
+            >
+              <SelectValue placeholder="Select transport mode" />
+            </SelectTrigger>
+            <SelectContent className="bg-white text-gray-900">
+              <SelectItem value="A100">A100</SelectItem>
+              <SelectItem value="H100">H100</SelectItem>
+              <SelectItem value="V100">V100</SelectItem>
+              <SelectItem value="A10">A10</SelectItem>
+              <SelectItem value="T4">T4</SelectItem>
+              <SelectItem value="RTX4090">RTX4090</SelectItem>
+              <SelectItem value="RTX3090">RTX3090</SelectItem>
+            </SelectContent>
+          </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="distance" className="flex items-center gap-2 text-[#1A1F2C]">
-              <Ruler className="w-4 h-4 text-[#667085]" />
-              Distance (km)
+            <Label htmlFor="hours" className="flex items-center gap-2 text-[#f8f8f8]">
+              <Hourglass className="w-4 h-4 text-[#667085]" />
+              Time (hrs)
             </Label>
             <Input
-              id="distance"
+              id="hours"
               type="number"
               step="0.1"
               placeholder="e.g., 12.5"
-              value={distanceKm}
-              onChange={(e) => setDistanceKm(e.target.value)}
-              // onChange={(e) => dispatch(setDistanceKm(e.target.value))}
-              className={`rounded-2xl border-[#E0E0E0] ${errors.distanceKm ? 'border-[#E5484D]' : ''}`}
+              value={hours}
+              onChange={(e) => setHours(e.target.value)}
+              className={`rounded-2xl border-[#E0E0E0] text-gray-900 ${errors.hoursKm ? 'border-[#E5484D]' : ''}`}
             />
-            {errors.distanceKm && <p className="text-sm text-[#E5484D]">{errors.distanceKm}</p>}
+            {errors.hoursKm && <p className="text-sm text-[#E5484D]">{errors.hoursKm}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mode" className="flex items-center gap-2 text-[#1A1F2C]">
-              <Train className="w-4 h-4 text-[#667085]" />
-              Mode of transport
+            <Label htmlFor="mode" className="flex items-center gap-2 text-[#f8f8f8]">
+              <Earth className="w-4 h-4 text-[#667085]" />
+              Region
             </Label>
-            <Select value={actualMode} onValueChange={handleActualMode}>
-              <SelectTrigger className={`rounded-2xl border-[#E0E0E0] ${errors.actualMode ? 'border-[#E5484D]' : ''}`}>
-                <SelectValue placeholder="Select transport mode" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="train">Train</SelectItem>
-                <SelectItem value="bus">Bus</SelectItem>
-                <SelectItem value="bike">Bike</SelectItem>
-                <SelectItem value="coach">Coach</SelectItem>
-                <SelectItem value="london_underground">London Underground</SelectItem>
-              </SelectContent>
-            </Select>
+            <Select value={region} onValueChange={handleRegion}>
+            <SelectTrigger
+              className={`rounded-2xl border-[#E0E0E0] text-gray-900 bg-white ${errors.actualMode ? 'border-[#E5484D]' : ''}`}
+            >
+              <SelectValue placeholder="Select transport mode" />
+            </SelectTrigger>
+            <SelectContent className="bg-white text-gray-900">
+              <SelectItem value="us-ca">US-CA</SelectItem>
+              <SelectItem value="us-tx">US-TX</SelectItem>
+              <SelectItem value="eu">EU</SelectItem>
+              <SelectItem value="china">China</SelectItem>
+              <SelectItem value="india">India</SelectItem>
+              <SelectItem value="brazil">Brazil</SelectItem>
+              <SelectItem value="canada">Canada</SelectItem>
+              <SelectItem value="australia">Australia</SelectItem>
+              <SelectItem value="japan">Japan</SelectItem>
+              <SelectItem value="iceland">Iceland</SelectItem>
+              <SelectItem value="norway">Norway</SelectItem>
+              <SelectItem value="singapore">Singapore</SelectItem>
+            </SelectContent>
+          </Select>
             {errors.actualMode && <p className="text-sm text-[#E5484D]">{errors.actualMode}</p>}
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="walletAddress" className="flex items-center gap-2 text-[#1A1F2C]">
-              <Wallet className="w-4 h-4 text-[#667085]" />
-              Wallet address
-            </Label>
-            <Input
-              id="walletAddress"
-              placeholder="YOUR_ALGORAND_ADDRESS"
-              value={isConnected ? walletAddress : manualWalletAddress}
-              // onChange={(e) => !isConnected && dispatch(setManualWalletAddress(e.target.value))}
-              onChange={(e) => !isConnected && setManualWalletAddress(e.target.value)}
-              readOnly={isConnected}
-              className={`rounded-2xl border-[#E0E0E0] ${errors.walletAddress ? 'border-[#E5484D]' : ''} ${isConnected ? 'bg-[#F6F8F7]' : ''}`}
-            />
-            {errors.walletAddress && <p className="text-sm text-[#E5484D]">{errors.walletAddress}</p>}
-          </div>
-
           <div className="space-y-2 pt-3">
             <Button
               type="submit"
@@ -203,7 +195,7 @@ export function TripForm() {
                   Reward sent!
                 </>
               ) : (
-                'Calculate & Reward'
+                'Calculate'
               )}
             </Button>
             <p className="text-sm text-center text-[#667085]">CarbonPoints will appear in your Pera Wallet within a minute.</p>
