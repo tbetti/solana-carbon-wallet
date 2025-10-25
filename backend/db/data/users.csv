@@ -1,0 +1,16 @@
+wallet_address,email,user_type,company_name,total_credits_purchased,total_credits_sold,total_co2_offset
+JqQ3eS1VtWcXbR5NdP9HmZvFyIoC4BsQnElTcDzKwG8B,john.smith@techcorp.com,Buyer,TechCorp AI Solutions,100.0,0.0,100.0
+KrR4fT2WuXdYcS6OeQ0InAwGzJpD5CtRoFmUdEaLxH9C,sarah.jones@cloudservices.io,Buyer,Cloud Services Inc,250.0,0.0,250.0
+LsS5gU3XvYeZdT7PfR1JoBxHaKqE6DuSpGnVeEbMyI0D,michael.chen@dataanalytics.com,Buyer,Data Analytics Pro,500.0,0.0,500.0
+MtT6hV4YwZfAeU8QgS2KpCyIbLrF7EvTqHoWfFcNzJ1E,emma.wilson@airesearch.org,Buyer,AI Research Labs,1000.0,0.0,1000.0
+NuU7iW5ZxAgBfV9RhT3LqDzJcMsG8FwUrIpXgGdOaK2F,david.brown@mlstartup.io,Buyer,ML Startup,300.0,0.0,300.0
+OvV8jX6AyBhCgW0SiU4MrEaKdNtH9GxVsJqYhHeQbL3G,lisa.garcia@deeplearning.ai,Buyer,DeepLearning Systems,400.0,0.0,400.0
+PwW9kY7BzCiDhX1TjV5NsFbLeMuI0HyWtKrZiIfRcM4H,james.taylor@computecloud.com,Buyer,Compute Cloud,750.0,0.0,750.0
+QxX0lZ8CaDjEiY2UkW6OtGcMfNvJ1IzXuLsAjJgSdN5I,maria.rodriguez@gpuhosting.net,Buyer,GPU Hosting Solutions,600.0,0.0,600.0
+RyY1mA9DbEkFjZ3VlX7PuHdNgOwK2JaYvMtBkKhTeO6J,robert.lee@neuralnet.io,Buyer,NeuralNet Technologies,200.0,0.0,200.0
+SzZ2nB0EcFlGkA4WmY8QvIeOhPxL3KbZwNuClLiUfP7K,jennifer.white@aimodels.com,Buyer,AI Models Corp,150.0,0.0,150.0
+7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU,project@kenya-forest.org,Seller,Kenya Forest Conservation Project,0.0,350.0,0.0
+DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK,admin@india-solar.com,Seller,India Solar Power,0.0,500.0,0.0
+9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM,contact@amazon-conservation.br,Seller,Amazon Rainforest Conservation,0.0,1000.0,0.0
+H4RdPkKRSfnYzW8YJrxVPhwxBvhKmW45bUzVjVhGvAXd,info@vietnam-wind.vn,Seller,Vietnam Wind Energy,0.0,300.0,0.0
+FwR3PbjS5iyqzLiLugrBqKSa5EKZ4vK2bYKsYdnqjKjQ,admin@peru-agriculture.pe,Seller,Peru Sustainable Agriculture,0.0,400.0,0.0
