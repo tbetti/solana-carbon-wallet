@@ -1,4 +1,4 @@
-import { Zap, Check, Loader2, Earth, Wallet, Hourglass } from 'lucide-react'
+import { Zap, Check, Loader2, Earth, Hourglass } from 'lucide-react'
 import { useEffect, useState } from 'react'
 // import { useDispatch, useSelector } from 'react-redux'
 // import { setActualMode, sethoursKm, setManualWalletAddress, setVehicleModelId, setSubmitted } from '../slices/tripSlice'
@@ -8,37 +8,23 @@ import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
 import { Separator } from '../../components/ui/separator'
+import { fetchGpuCost } from 'pages/api/apiClient'
 
-interface TripFormProps {
-  walletAddress: string
-  isConnected: boolean
-  isSubmitting: boolean
-  onSubmit: (data: { vehicle_model_id: string; hours_km: number; actual_mode: string; wallet_address: string }) => void
-}
-
-// export function TripForm({ walletAddress, isConnected, isSubmitting, onSubmit }: TripFormProps) {
 export function TripForm() {
   const [submitted, setSubmitted] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
 
     // State for the form inputs, pre-filled with your example
   const [gpuType, setGpuType] = useState('A100');
   const [hours, setHours] = useState('100');
-  const [region, setRegion] = useState('US-West');
+  const [region, setRegion] = useState('US-CA');
 
   // State for the API response
   const [data, setData] = useState(null); // This will hold the response JSON
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (isConnected) {
-      // dispatch(setManualWalletAddress(walletAddress))
-    }
-  }, [isConnected, walletAddress])
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
@@ -60,7 +46,7 @@ export function TripForm() {
       newErrors.actualMode = 'Please select a region.'
     }
 
-    setErrors(newErrors)
+    setError(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
@@ -74,30 +60,41 @@ export function TripForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true);
+    setError(null);
+    setData(null); // Clear previous results
 
     if (!validate()) {
+      setLoading(false);
       return
     }
 
-    // await onSubmit({
-    //   vehicle_model_id: vehicleModelId,
-    //   hours_km: parseFloat(hoursKm),
-    //   actual_mode: actualMode,
-    //   wallet_address: walletAddress,
-    // })
+    try {
+      // Create the data object to send
+      const calculationData = {
+        gpuType,
+        hours: parseInt(hours, 10),
+        region,
+      };
 
-    setSubmitted(true)
-    // setTimeout(() => dispatch(setSubmitted(false)), 2000)
-    setTimeout(() => setSubmitted(false), 2000)
-
+      // Call the externalized API function
+      const result = await fetchGpuCost(calculationData);
+      setSubmitted(true)
+      setData(result.data); // Store the successful response
+      setTimeout(() => setSubmitted(false), 2000)
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const isFormValid =
     gpuType &&
     parseFloat(hours) > 0 &&
     parseFloat(hours) <= 2000 &&
-    region &&
-    isConnected && walletAddress
+    region
+    // isConnected && walletAddress
 
   return (
     <Card className="shadow-[0_4px_16px_rgba(0,0,0,0.06)] rounded-2xl border-[#E0E0E0]">
@@ -117,7 +114,7 @@ export function TripForm() {
             </Label>
             <Select value={gpuType} onValueChange={handleGpuType}>
             <SelectTrigger
-              className={`rounded-2xl border-[#E0E0E0] text-gray-900 bg-white ${errors.actualMode ? 'border-[#E5484D]' : ''}`}
+              className={`rounded-2xl border-[#E0E0E0] text-gray-900 bg-white ${error && error.actualMode ? 'border-[#E5484D]' : ''}`}
             >
               <SelectValue placeholder="Select transport mode" />
             </SelectTrigger>
@@ -145,9 +142,9 @@ export function TripForm() {
               placeholder="e.g., 12.5"
               value={hours}
               onChange={(e) => setHours(e.target.value)}
-              className={`rounded-2xl border-[#E0E0E0] text-gray-900 ${errors.hoursKm ? 'border-[#E5484D]' : ''}`}
+              className={`rounded-2xl border-[#E0E0E0] text-gray-900 ${error && error.hours? 'border-[#E5484D]' : ''}`}
             />
-            {errors.hoursKm && <p className="text-sm text-[#E5484D]">{errors.hoursKm}</p>}
+            {error && error.hours && <p className="text-sm text-[#E5484D]">{error.hours}</p>}
           </div>
 
           <div className="space-y-2">
@@ -157,34 +154,35 @@ export function TripForm() {
             </Label>
             <Select value={region} onValueChange={handleRegion}>
             <SelectTrigger
-              className={`rounded-2xl border-[#E0E0E0] text-gray-900 bg-white ${errors.actualMode ? 'border-[#E5484D]' : ''}`}
+              className={`rounded-2xl border-[#E0E0E0] text-gray-900 bg-white ${error && error.actualMode ? 'border-[#E5484D]' : ''}`}
             >
               <SelectValue placeholder="Select transport mode" />
             </SelectTrigger>
             <SelectContent className="bg-white text-gray-900">
-              <SelectItem value="us-ca">US-CA</SelectItem>
-              <SelectItem value="us-tx">US-TX</SelectItem>
-              <SelectItem value="eu">EU</SelectItem>
-              <SelectItem value="china">China</SelectItem>
-              <SelectItem value="india">India</SelectItem>
-              <SelectItem value="brazil">Brazil</SelectItem>
-              <SelectItem value="canada">Canada</SelectItem>
-              <SelectItem value="australia">Australia</SelectItem>
-              <SelectItem value="japan">Japan</SelectItem>
-              <SelectItem value="iceland">Iceland</SelectItem>
-              <SelectItem value="norway">Norway</SelectItem>
-              <SelectItem value="singapore">Singapore</SelectItem>
+              <SelectItem value="US">US</SelectItem>
+              <SelectItem value="US-CA">US-CA</SelectItem>
+              <SelectItem value="US-TX">US-TX</SelectItem>
+              <SelectItem value="EU">EU</SelectItem>
+              <SelectItem value="China">China</SelectItem>
+              <SelectItem value="India">India</SelectItem>
+              <SelectItem value="Brazil">Brazil</SelectItem>
+              <SelectItem value="Canada">Canada</SelectItem>
+              <SelectItem value="Australia">Australia</SelectItem>
+              <SelectItem value="Japan">Japan</SelectItem>
+              <SelectItem value="Iceland">Iceland</SelectItem>
+              <SelectItem value="Norway">Norway</SelectItem>
+              <SelectItem value="Singapore">Singapore</SelectItem>
             </SelectContent>
           </Select>
-            {errors.actualMode && <p className="text-sm text-[#E5484D]">{errors.actualMode}</p>}
+            {error && error.actualMode && <p className="text-sm text-[#E5484D]">{error && error.actualMode}</p>}
           </div>
           <div className="space-y-2 pt-3">
             <Button
               type="submit"
               className="w-full bg-[#00A884] hover:bg-[#00A884]/90 text-white rounded-2xl h-12"
-              disabled={!isFormValid || isSubmitting}
+              disabled={loading && !!isFormValid}
             >
-              {isSubmitting ? (
+              {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Issuing CarbonPoints…
@@ -195,7 +193,7 @@ export function TripForm() {
                   Reward sent!
                 </>
               ) : (
-                'Calculate'
+                'Calculate Emissions'
               )}
             </Button>
             <p className="text-sm text-center text-[#667085]">CarbonPoints will appear in your Pera Wallet within a minute.</p>
