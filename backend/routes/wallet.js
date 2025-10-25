@@ -4,13 +4,14 @@ const nacl = require('tweetnacl');
 const bs58 = require('bs58');
 
 const router = Router();
-const connection = new Connection(process.env.SOLANA_RPC_URL || "confirmed");
+// need to fix below to use an actual url then check line 14
+// const connection = new Connection(process.env.SOLANA_RPC_URL || "confirmed");
 
 // Get SOL balance for a wallet
 router.get("/balance/:address", async(req, res) => {
     try{
         const pubkey = new PublicKey(req.params.address);
-        const balance = await connection.getBalance(pubkey);
+        // const balance = await connection.getBalance(pubkey);
         res.json({balance: balance / 1e9});
     } catch (error) {
         res.status(400).json({error: "Invalid address"});

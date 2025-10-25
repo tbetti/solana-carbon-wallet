@@ -10,7 +10,6 @@
 const pool = require('../config/database');
 
 class TradingEngine {
-  // ---------- NEW: Flexible marketplace query with filters ----------
   static async getMarketplaceListings(filters = {}) {
     const { projectType, minPrice, maxPrice, minQuantity, sortBy, limit } = filters;
 
