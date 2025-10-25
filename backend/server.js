@@ -1,54 +1,77 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { Connection, PublicKey} from "@solana/web3.js";
-import nacl from 'tweetnacl';
-import bs58 from 'bs58';
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
 
 dotenv.config();
 const app = express();
+
+// ============================================================================
+// MIDDLEWARE
+// ============================================================================
 app.use(cors());
 app.use(express.json());
 
-const connection = new Connection(process.env.SOLANA_RPC_URL || "confirmed");
+// ============================================================================
+// IMPORT & MOUNT ROUTES
+// ============================================================================
 
-app.get("/", (req,res) => {
-    res.send("Solana Backend is running");
+// Import your new router files
+const carbonRoutes = require('./routes/carbon');
+const marketplaceRoutes = require('./routes/marketplace');
+const userRoutes = require('./routes/user');
+const recommendRoutes = require('./routes/recommend');
+const infoRoutes = require('./routes/info');
+const walletRoutes =require('./routes/wallet');
+
+// Mount them to their base paths
+app.use('/api/carbon', carbonRoutes);
+
+// This line means: "Use marketplaceRoutes for any request starting with /api/marketplace"
+app.use('/api/marketplace', marketplaceRoutes);
+
+// This line means: "Use userRoutes for any request starting with /api/user"
+app.use('/api/user', userRoutes);
+
+// This line means: "Use recommendRoutes for any request starting with /api/recommend"
+app.use('/api/recommend', recommendRoutes);
+
+// This line means: "Use infoRoutes for any request starting with /api"
+// (This will catch /api/health and /api/info)
+app.use('/api', infoRoutes);
+
+app.use('/api/wallet', walletRoutes);
+
+
+// ============================================================================
+// ERROR HANDLING (Keep this at the bottom)
+// ============================================================================
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Endpoint not found',
+    message: `${req.method} ${req.path} does not exist`
+  });
 });
 
-// Get SOL balance for a wallet
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({
+    error: 'Internal server error',
+    message: err.message
+  });
+});
 
-app.get("/balance/:address", async(req, res) => {
-    try{
-        const pubkey = new PublicKey(req.params.address);
-        const balance = await connection.getBalance(pubkey);
-        res.json({balance: balance / 1e9});
-    } catch (error) {
-        res.status(400).json({error: "Invalid address"});
-    }
-})
+// ============================================================================
+// START SERVER
+// ============================================================================
 
-// Verify wallet signature (basic auth check)
-app.post ("/verify-signature", async(req, res) => {
-    try {
-        const {publicKey, signature, message} = req.body;
-
-        const isValid = nacl.sign.detached.verify(
-            new TextEncoder().encode(message),
-            bs58.decode(signature),
-            bs58.decode(publicKey)
-        )
-        if(isValid){
-            res.json({successs: true, message: "Signature is valid"});
-        } else {
-            res.status(401).json({ success: false, message: "Invalid signature" });
-        }
-    } catch (error) {
-        res.status(400).json({error: "Error verifying signature"});
-    }
-})
-
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Carbon Wallet API running on port ${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`📖 API info: http://localhost:${PORT}/api/info`);
 });
+
+module.exports = app;
