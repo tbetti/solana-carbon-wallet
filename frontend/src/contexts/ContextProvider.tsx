@@ -1,7 +1,13 @@
 import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import {
-    UnsafeBurnerWalletAdapter
+    // Import all the wallets you want to support
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+    AlphaWalletAdapter,
+    TrustWalletAdapter,
+    LedgerWalletAdapter,
+    UnsafeBurnerWalletAdapter // Keep burner wallet for testing
 } from '@solana/wallet-adapter-wallets';
 import { Cluster, clusterApiUrl } from '@solana/web3.js';
 import { FC, ReactNode, useCallback, useMemo } from 'react';
@@ -24,8 +30,15 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     console.log(network);
 
+    // We've added Phantom, Solflare, Backpack, Trust, and Ledger
+    // to the list of supported wallets.
     const wallets = useMemo(
         () => [
+            new PhantomWalletAdapter(),
+            new SolflareWalletAdapter(),
+            new AlphaWalletAdapter(),
+            new TrustWalletAdapter(),
+            new LedgerWalletAdapter(),
             new UnsafeBurnerWalletAdapter(),
         ],
         [network]
@@ -40,13 +53,12 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     );
 
     return (
-        // TODO: updates needed for updating and referencing endpoint: wallet adapter rework
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} onError={onError} autoConnect={autoConnect}>
                 <ReactUIWalletModalProviderDynamic>
                     {children}
                 </ReactUIWalletModalProviderDynamic>
-			</WalletProvider>
+            </WalletProvider>
         </ConnectionProvider>
     );
 };
