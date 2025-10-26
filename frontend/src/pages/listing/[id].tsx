@@ -4,8 +4,8 @@ import { ListingView } from "../../views";
 import { useRouter } from 'next/router';
 
 const Listing: NextPage = (props) => {
-  const router = useRouter();
-  const { id } = router.query;
+  // const router = useRouter();
+  // const { id } = router.query;
 
   return (
     <div>
@@ -16,7 +16,7 @@ const Listing: NextPage = (props) => {
           content="Basic Functionality"
         />
       </Head>
-      <ListingView listingId={id} />
+      <ListingView />
     </div>
   );
 };

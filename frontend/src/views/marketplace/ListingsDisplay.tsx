@@ -22,7 +22,7 @@ export const ListingsDisplay = ({ listings }) => {
               </span>
               <Link href={`/listing/${item.listingId}`}>
                 <Button className="w-full bg-[#00A884] hover:bg-[#00A884]/90 text-white rounded-2xl h-12">
-                  View Details
+                  Purchase
                 </Button>
               </Link>
             </div>
