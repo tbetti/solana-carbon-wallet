@@ -53,16 +53,16 @@ npm start
 
 You should see:
 ```
-🚀 Carbon Wallet API running on port 3000
-📊 Health check: http://localhost:3000/api/health
-📖 API info: http://localhost:3000/api/info
+🚀 Carbon Wallet API running on port 8000
+📊 Health check: http://localhost:8000/api/health
+📖 API info: http://localhost:8000/api/info
 ```
 
 ---
 
 ### Step 4: Test It Works
 ```bash
-curl http://localhost:3000/api/health
+curl http://localhost:8000/api/health
 ```
 
 Expected response:
@@ -206,7 +206,7 @@ npm install morgan
 
 **Calculate emissions:**
 ```bash
-curl -X POST http://localhost:3000/api/calculate-emissions \
+curl -X POST http://localhost:8000/api/calculate-emissions \
   -H "Content-Type: application/json" \
   -d '{
     "gpuType": "A100",
@@ -217,12 +217,12 @@ curl -X POST http://localhost:3000/api/calculate-emissions \
 
 **Get marketplace listings:**
 ```bash
-curl http://localhost:3000/api/marketplace/listings?limit=5
+curl http://localhost:8000/api/marketplace/listings?limit=5
 ```
 
 **Buy credits:**
 ```bash
-curl -X POST http://localhost:3000/api/marketplace/buy \
+curl -X POST http://localhost:8000/api/marketplace/buy \
   -H "Content-Type: application/json" \
   -d '{
     "buyerWallet": "0x123...",
@@ -252,10 +252,10 @@ curl -X POST http://localhost:3000/api/marketplace/buy \
 2. Verify PostgreSQL is running
 3. Test connection: `psql $DATABASE_URL`
 
-### Issue: "Port 3000 already in use"
+### Issue: "Port 8000 already in use"
 **Solution:**
 1. Change PORT in `.env` to something else (e.g., 3001)
-2. Or kill the process: `lsof -ti:3000 | xargs kill -9`
+2. Or kill the process: `lsof -ti:8000 | xargs kill -9`
 
 ### Issue: "CORS error in browser"
 **Solution:** The API already includes CORS middleware. If still having issues, specify allowed origins:
