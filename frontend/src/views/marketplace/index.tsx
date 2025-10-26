@@ -1,4 +1,5 @@
 import { FC, useState, useEffect } from 'react';
+import Link from 'next/link';
 // Make sure this import path is correct for your project structure
 import { fetchMarketplaceListings } from '../../pages/api/apiClient';
 import pkg from '../../../package.json'; // Adjust path as needed

@@ -1,3 +1,3 @@
 export { HomeView } from "./home"
-export { carbonEmissionsView } from "./carbonEmissions";
+export { CarbonEmissionsView } from "./carbonEmissions";
 export { MarketPlaceView } from "./marketplace";

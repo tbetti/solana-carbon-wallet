@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { MarketPlaceView } from "../views";
+import { CarbonEmissionsView } from "../views";
 
-const Basics: NextPage = (props) => {
+const CarbonEmissions: NextPage = (props) => {
   return (
     <div>
       <Head>
@@ -12,9 +12,9 @@ const Basics: NextPage = (props) => {
           content="Basic Functionality"
         />
       </Head>
-      <MarketPlaceView />
+      <CarbonEmissionsView/>
     </div>
   );
 };
 
-export default Basics;
+export default CarbonEmissions;
