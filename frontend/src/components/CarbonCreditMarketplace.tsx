@@ -24,7 +24,7 @@ export const CarbonCreditMarketplace: FC = () => {
   const SELLER_WALLET = new PublicKey('3H4aScVc48qzMHTjX4PAYzChmkniYDKmvKybAwy6rQBj');
   
   // Backend API URL
-  const BACKEND_URL = 'http://localhost:8000';
+  const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
   // Fetch carbon credits from backend
   const fetchCredits = useCallback(async () => {
