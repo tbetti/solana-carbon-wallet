@@ -35,12 +35,11 @@ app.use('/api/user', userRoutes);
 // This line means: "Use recommendRoutes for any request starting with /api/recommend"
 app.use('/api/recommend', recommendRoutes);
 
+app.use('/api/wallet', walletRoutes);
+
 // This line means: "Use infoRoutes for any request starting with /api"
 // (This will catch /api/health and /api/info)
 app.use('/api', infoRoutes);
-
-app.use('/api/wallet', walletRoutes);
-
 
 // ============================================================================
 // ERROR HANDLING (Keep this at the bottom)
