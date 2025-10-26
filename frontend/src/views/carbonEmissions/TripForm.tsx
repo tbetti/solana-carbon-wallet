@@ -180,7 +180,6 @@ export function TripForm({ onCalculate, loading, submitted, setSubmitted, error,
                 'Calculate Emissions'
               )}
             </Button>
-            <p className="text-sm text-center text-[#667085]">CarbonPoints will appear in your Pera Wallet within a minute.</p>
           </div>
         </form>
       </CardContent>
