@@ -101,9 +101,9 @@ export const ListingDisplay = ({ listing }) => {
           <p className="text-center text-lg text-gray-800">
             You now own {quantity} carbon credit! 🌱
           </p>
-          <Link href="/my-offsets" passHref>
+          <Link href="/" passHref>
             <button className="w-full h-12 px-6 bg-gray-700 hover:bg-gray-800 text-white font-semibold rounded-xl transition-colors">
-              Go to My Offsets
+              Return to Home
             </button>
           </Link>
         </div>
