@@ -27,7 +27,6 @@ export const MarketPlaceView: FC = ({}) => {
           sortBy: null,
           limit: 10,
         });
-        console.log(result.data.listings[0]);
         setListings(result.data.listings || []);
       } catch (err) {
         console.error('Failed to fetch listings:', err);
