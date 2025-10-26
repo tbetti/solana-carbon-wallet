@@ -1,6 +1,6 @@
 import { Button } from '../../components/ui/button'
 import { Card, CardContent } from '../../components/ui/card'
-
+import Link from 'next/link';
 
 export function ResultsContainer({result, isVisible}) {
   return (
@@ -33,9 +33,11 @@ export function ResultsContainer({result, isVisible}) {
                 </div>
               </div>
             </div>
-            <Button className="w-full bg-[#00A884] hover:bg-[#00A884]/90 text-white rounded-2xl h-12">
-              Go to Marketplace
-            </Button>
+            <Link href={"/marketplace"}>
+              <Button className="w-full bg-[#00A884] hover:bg-[#00A884]/90 text-white rounded-2xl h-12">
+                Go to Marketplace
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       )}

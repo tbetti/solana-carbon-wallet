@@ -85,3 +85,33 @@ export const fetchMarketplaceListings = async ({
   const result = await response.json();
   return result; // Return the successful response
 };
+
+/**
+ * Fetches the details for a single marketplace listing from the API.
+ *
+ * @param {string} id - The UUID of the listing to fetch.
+ * @returns {Promise<object>} A promise that resolves to the listing details object.
+ * @throws {Error} Throws an error if the network response is not ok (e.g., 404, 500).
+ */
+export const fetchListingDetails = async (id) => {
+
+  if (!id) {
+    throw new Error('Listing ID is required.');
+  }
+
+  const response = await fetch(`${backendUrl}marketplace/listing/${id}`);
+
+  if (!response.ok) {
+    // If the server returns an error (like 404 "Not Found" or 500),
+    // we throw an error to be caught by the caller.
+    const errorData = await response.json();
+    throw new Error(errorData.error || `Failed to fetch listing: ${response.statusText}`);
+  }
+
+  // Parse the JSON data from the response
+  const data = await response.json();
+  
+  // The response matches your spec:
+  // { listingId, creditDetails, projectDetails, ... }
+  return data;
+};

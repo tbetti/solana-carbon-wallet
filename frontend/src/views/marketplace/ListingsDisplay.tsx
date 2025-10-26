@@ -1,3 +1,6 @@
+import { Button } from '../../components/ui/button'
+import Link from 'next/link';
+
 export const ListingsDisplay = ({ listings }) => {
   const displayData = listings || [];
 
@@ -17,6 +20,11 @@ export const ListingsDisplay = ({ listings }) => {
               <span className="text-gray-400">
                 📦 {item.quantityAvailable} available
               </span>
+              <Link href={`/listing/${item.listingId}`}>
+                <Button className="w-full bg-[#00A884] hover:bg-[#00A884]/90 text-white rounded-2xl h-12">
+                  Purchase
+                </Button>
+              </Link>
             </div>
           </div>
         ))

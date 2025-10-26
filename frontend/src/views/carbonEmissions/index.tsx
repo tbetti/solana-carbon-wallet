@@ -15,7 +15,7 @@ import pkg from '../../../package.json';
 // Store
 import useUserSOLBalanceStore from '../../stores/useUserSOLBalanceStore';
 
-export const carbonEmissionsView: FC = ({ }) => {
+export const CarbonEmissionsView: FC = ({ }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
   const [data, setData] = useState('');
