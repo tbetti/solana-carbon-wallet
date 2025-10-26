@@ -1,6 +1,7 @@
 // Next, React
 import { FC, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CarbonEmissionsView } from 'views/carbonEmissions';
 
 // Wallet
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
@@ -33,38 +34,37 @@ export const HomeView: FC = ({ }) => {
         <h1 className="text-center text-5xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
           Carbon Wallet <span className='text-sm font-normal align-top text-slate-700'>v{pkg.version}</span>
         </h1>
-        <h4 className="md:w-full text-center text-slate-300 my-2">
+        <h4 className="md:w-full text-2x1 md:text-4xl text-center text-slate-300 my-2">
           <p>Offset your GPU emissions with carbon credits on Solana</p>
+          <p className='text-slate-500 text-2x1 leading-relaxed'>Connect your Phantom Wallet and use Solana CarbonPoints automatically.</p>
         </h4>
-        
-        <div className="text-center mb-6">
-          {wallet.publicKey && (
-            <div className="stats shadow bg-base-200">
-              <div className="stat">
-                <div className="stat-title">Your Wallet</div>
-                <div className="stat-value text-sm">{wallet.publicKey.toBase58().substring(0, 4)}...{wallet.publicKey.toBase58().slice(-4)}</div>
-                <div className="stat-desc">SOL Balance: {(balance || 0).toLocaleString()}</div>
+        <div className="flex-1">
+          <div className="text-center mb-6">
+            {wallet.publicKey && (
+              <div className="stats shadow bg-base-200">
+                <div className="stat">
+                  <div className="stat-title">Your Wallet</div>
+                  <div className="stat-value text-sm">{wallet.publicKey.toBase58().substring(0, 4)}...{wallet.publicKey.toBase58().slice(-4)}</div>
+                  <div className="stat-desc">SOL Balance: {(balance || 0).toLocaleString()}</div>
+                </div>
               </div>
-            </div>
-          )}
-          {!wallet.publicKey && (
-            <div className="text-center p-4">
-              <p className="text-slate-400">Connect your wallet to get started</p>
-            </div>
-          )}
-        </div>
-
-        {/* Airdrop for testing */}
-        {wallet.publicKey && (
-          <div className="mb-6">
-            <RequestAirdrop />
+            )}
+            {!wallet.publicKey && (
+              <div className="text-center p-4">
+                <p className="text-slate-400">Connect your wallet to get started</p>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Airdrop for testing */}
+          {wallet.publicKey && (
+              <RequestAirdrop />
+
+          )}
+        </div>      
 
         {/* Carbon Credit Marketplace */}
-        <div className="w-full mt-6">
-          <CarbonCreditMarketplace />
-        </div>
+          <CarbonEmissionsView />
       </div>
     </div>
   );
