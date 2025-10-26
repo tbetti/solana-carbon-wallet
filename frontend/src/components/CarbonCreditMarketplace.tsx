@@ -32,7 +32,6 @@ export const CarbonCreditMarketplace: FC = () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/wallet/marketplace`);
       const data = await response.json();
-      console.log({'response': data})
       setCredits(data.listings || []);
       notify({ type: 'success', message: 'Carbon credits loaded!' });
     } catch (error) {
