@@ -7,7 +7,7 @@ A full-stack web application built with **Next.js** and **Solana Web3.js** that 
 ## 📸 Demo & Preview
 
 ### 🎥 Demo Video
-_Add your demo video link here (e.g., YouTube, Loom, or GitHub asset)._
+![Demo Video](https://www.loom.com/share/0724047f6b6540429622153969740f97)_
 
 ### 🖼️ Screenshot
 ![App Screenshot](./app-demo.png)
